@@ -5,16 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
     public function criarUsuario(Request $request)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'user_name' => 'required|string',
             'password' => 'required |string|min:6|max:16'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
 
         try {
 
@@ -22,7 +27,7 @@ class UsersController extends Controller
 
             $usuario->nome = $request->name;
             $usuario->user_name = $request->user_name;
-            $usuario->password = Hash::make($request->password);
+            $usuario->password = bcrypt($request->password);
             $usuario->save();
 
             return response()->json(["success" => true, "message" => 'Usuario criado com sucesso'], 201);
