@@ -13,21 +13,32 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+    /** Rotas Publicas */
 
-Route::controller(\App\Http\Controllers\Auth\AuthController::class)->group(function () {
-      Route::post('/auth/login', 'login');
+    Route::controller(\App\Http\Controllers\Auth\AuthController::class)->group(function () {
+        Route::post('/auth/login', 'login');
+    });
+
+    /** Rotas autenticadas */
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::prefix('auth')->controller(\App\Http\Controllers\Auth\AuthController::class)->group(function () {
+        Route::get('logged', 'logged');
+        Route::post('logout', 'logout');
+    });
+
+    Route::prefix('admin')->controller(\App\Http\Controllers\UsersController::class)->group(function () {
+        Route::post('users', 'criarUsuario');
+    });
+
+
 });
 
-Route::prefix('admin')->middleware('auth:sanctum')->controller(\App\Http\Controllers\UsersController::class)->group(function () {
-    Route::post('users', 'criarUsuario');
-});
-
-Route::prefix('auth')->middleware('auth:sanctum')->controller(\App\Http\Controllers\Auth\AuthController::class)->group(function () {
-    Route::post('logout', 'logout');
-});
 
 
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+
+
+
+

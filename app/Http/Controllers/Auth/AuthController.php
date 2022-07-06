@@ -33,24 +33,29 @@ class AuthController extends Controller
             $user = auth()->user();
 
 
-            return response()->json(["success" => true, "data" => ["token" => $token , "user" => $user->nome]], 201);
+            return response()->json(["success" => true, "data" => ["token" => $token , "user" => $user->nome]], 202);
 
         } catch (\Exception $e) {
-            return response()->json(["success" => false, "message" => $e->getMessage()], 400);
+            return response()->json(["success" => false, "message" => $e->getMessage()], 401);
         }
+    }
+
+    public function logged(Request $request)
+    {
+        $logged = auth()->user();
+        return response()->json(["data" => $logged , "success" => true,],);
+
     }
 
     public function logout(Request $request)
     {
         try {
-
             auth()->user()->tokens()->delete();
 
-
-            return response()->json(["success" => true, "message" => "Usuario deslogado"], 200);
+            return response()->json(["message" => "Usuario deslogado", "success" => true]);
 
         } catch (\Exception $e) {
-            return response()->json(["success" => false, "message" => $e->getMessage()], 400);
+            return response()->json(["message" => $e->getMessage(), "success" => false], 400);
         }
 
 

@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,4 +48,16 @@ class Handler extends ExceptionHandler
             //
         });
     }
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+
+        // Here you can return your own response or work with request
+         return response()->json(["message" => 'Sessão não está ativa. Faça login novamente', "success" => false ], 401);
+
+        // This is the default
+//        return $request->expectsJson()
+//            ? response()->json(['message' => $exception->getMessage()], 401)
+//            : redirect()->guest($exception->redirectTo() ?? route('index'));
+    }
+
 }
