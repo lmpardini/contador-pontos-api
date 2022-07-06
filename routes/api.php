@@ -23,16 +23,35 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    /** AuthController */
     Route::prefix('auth')->controller(\App\Http\Controllers\Auth\AuthController::class)->group(function () {
         Route::get('logged', 'logged');
         Route::post('logout', 'logout');
     });
 
+    /** UsersController */
     Route::prefix('admin')->controller(\App\Http\Controllers\UsersController::class)->group(function () {
         Route::post('users', 'criarUsuario');
+        Route::get('users', 'listarTodosUsuarios');
+        Route::get('users/{id}', 'listarUsuarioPorId');
+        Route::delete('users/{id}', 'deletarUsuarioPorId');
     });
 
+    /** PartidasController */
+    Route::prefix('partida')->controller(\App\Http\Controllers\UsersController::class)->group(function () {
+        Route::post('/', 'criarPartida');
+        Route::get('/', 'listarTodasPartidas');
+        Route::get('/{id}', 'listarPartidaPorId');
+        Route::delete('/{id}', 'deletarPartidaPorId');
+    });
 
+    /** RodadasController */
+    Route::prefix('rodada')->controller(\App\Http\Controllers\UsersController::class)->group(function () {
+        Route::post('/', 'criarRodada');
+        Route::get('/', 'listarRodadas');
+        Route::get('/{id}', 'listarRodadasPorId');
+        Route::delete('/{id}', 'deletarRodadasPorId');
+    });
 });
 
 

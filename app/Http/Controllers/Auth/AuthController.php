@@ -13,8 +13,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_name' => 'required|string',
-            'password' => 'required |string|min:6|max:16'
+            'email' => 'required|string',
+            'password' => 'required |string|min:5|max:16'
         ]);
 
         if ($validator->fails()) {
@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         try {
 
-            $credentials = $request->only('user_name', 'password');
+            $credentials = $request->only('email', 'password');
 
             if (!auth()->attempt($credentials)){
                 throw new \Exception('Usuario/Senha invalidos', 401);
@@ -33,7 +33,7 @@ class AuthController extends Controller
             $user = auth()->user();
 
 
-            return response()->json(["success" => true, "data" => ["token" => $token , "user" => $user->nome]], 202);
+            return response()->json(["data" => ["Bearer Token" => $token , "user" => $user->nome], "success" => true],202);
 
         } catch (\Exception $e) {
             return response()->json(["success" => false, "message" => $e->getMessage()], 401);

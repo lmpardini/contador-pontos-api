@@ -27,14 +27,15 @@ class UsersController extends Controller
     public function listarUsuarioPorId($id)
     {
         try {
-            if ($id != null && is_numeric($id)) {
+
+            if (!isNull($id)) {
                 throw new \Exception('O Campo ID é obrigatório');
             }
 
             $data = User::find($id);
 
-            if (isNull($data)) {
-                throw new \Exception('Id não encontrado');
+            if (!$data) {
+                throw new \Exception('Usuário não encontrado');
             }
 
             return response()->json(["success" => true, "message" => $data]);
@@ -47,9 +48,9 @@ class UsersController extends Controller
     public function criarUsuario(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'user_name' => 'required|string',
-            'password' => 'required |string|min:6|max:16'
+            'nome' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|string|min:5|max:16'
         ]);
 
         if ($validator->fails()) {
@@ -59,8 +60,8 @@ class UsersController extends Controller
         try {
             $usuario = new User();
 
-            $usuario->nome = $request->name;
-            $usuario->user_name = $request->user_name;
+            $usuario->nome = $request->nome;
+            $usuario->email = $request->email;
             $usuario->password = bcrypt($request->password);
             $usuario->save();
 
@@ -74,7 +75,7 @@ class UsersController extends Controller
     public function deletarUsuarioPorId($id)
     {
         try {
-            if ($id != null && is_numeric($id)) {
+            if (!isNull($id)) {
                 throw new \Exception('O Campo ID é obrigatório');
             }
 
